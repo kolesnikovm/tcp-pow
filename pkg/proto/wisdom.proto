@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option go_package = "github.com/kolesnikovm/tcp-pow/pkg/proto/gen/v1";
+
+message WrapperRequest {
+    oneof request {
+        QuoteRequest quoteRequest = 1;
+        Solution solution = 2;
+    }
+}
+
+message WrapperResponse {
+    oneof response {
+        QuoteResponse quote = 1;
+        Challenge challenge = 2;
+        Error error = 3;
+    }
+}
+
+message QuoteRequest {}
+
+message QuoteResponse {
+    string text = 1;
+}
+
+message Challenge {
+    bytes data = 1;
+    int32 difficulty = 2;
+}
+
+message Solution {
+    int64 nonce = 1;
+}
+
+message Error {
+    enum Code {
+        ERR_UNSPECIFIED = 0;
+        ERR_BAD_RQUEST = 1;
+        ERR_INTERNAL = 2;
+        ERR_INVALID_SOLUTION = 3;
+    }
+    Code code = 1;
+}

@@ -1,0 +1,9 @@
+with-expecter: true
+filename: "{{.InterfaceName}}.go"
+dir: "{{.InterfaceDir}}/mocks"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: mocks
+packages:
+  github.com/kolesnikovm/tcp-pow/internal/repository:
+    interfaces:
+      Wisdom:

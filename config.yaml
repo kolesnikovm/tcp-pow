@@ -1,0 +1,5 @@
+# server config
+max_requests: 1000
+pow_difficulty: 22
+# client config
+concurrency: 10

@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  server:
+    image: github.com/kolesnikovm/tcp-pow:latest
+    environment:
+      - LISTEN_ADDRESS=:9101
+      - QUOTES_FILE=/app/data/quotes.csv
+    volumes:
+      - ../quotes.csv:/app/data/quotes.csv
+      - ../config.yaml:/app/config/config.yaml
+    command:
+      - "/app/app"
+      - "server"
+      - "--config"
+      - "config/config.yaml"
+
+  client:
+    image: github.com/kolesnikovm/tcp-pow:latest
+    environment:
+      - SERVER_ADDRESS=server:9101
+    volumes:
+      - ../config.yaml:/app/config/config.yaml
+    command:
+      - "/app/app"
+      - "client"
+      - "--config"
+      - "config/config.yaml"
+    depends_on:
+      - server
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+        - 9090:9090
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+    volumes:
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    ports:
+        - 3000:3000
+    depends_on:
+      - prometheus
